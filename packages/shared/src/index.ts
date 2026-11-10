@@ -32,3 +32,7 @@ export * from "./schemas/prompt.js";
 export * from "./schemas/nsfw.js";
 export * from "./schemas/shot.js";
 export * from "./schemas/asset.js";
+
+// ── M3-6：promptLibrary（m35-spec §2.1 授权的唯一 shared 追加；末尾追加，不动上方 M0/M1 冻结区）──
+
+export * from "./promptLibrary/index.js";
