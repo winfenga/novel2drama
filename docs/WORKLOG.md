@@ -76,12 +76,12 @@
 | M1 领域模型 | `worklog/M01.md` | 8 | ✅ 完成（出口全绿：tsc 三包 0 error / vitest 19 条） | 2026-11-10 |
 | M2 合规闸门 | `worklog/M02.md` | 4 | ✅ 完成（gate 22 例 + 五要素锁定） | 2026-11-10 |
 | M3 提示词资产 | `worklog/M03.md` | 8 | ✅ 完成（tk.md 9 锚点 / 动作库 93 条 / 全包 297+38 绿，四棒接力 `268f060`） | 2026-11-10 |
-| M4 校验器 | `worklog/M04.md` | 7 | ⬜ 未开工 | — |
+| M4 校验器 | `worklog/M04.md` | 7 | 🚧 并行施工中（契约 `m489-spec.md`） | 2026-11-10 |
 | M5 LLM 接入 | `worklog/M05.md` | 5 | ✅ 完成（llm 五件套 59 例 + vision role，`b318ad0`） | 2026-11-10 |
 | M6 分镜引擎 | `worklog/M06.md` | 8 | ✅ 完成（shot 72 例，八件套） | 2026-11-10 |
 | M7 task_type | `worklog/M07.md` | 5 | ✅ 完成（media 40 例，帧换算 ceil 裁决 §20） | 2026-11-10 |
-| M8 ComfyUI | `worklog/M08.md` | 6 | ⬜ 未开工 | — |
-| M9 媒体链路 | `worklog/M09.md` | 6 | ⬜ 未开工 | — |
+| M8 ComfyUI | `worklog/M08.md` | 6 | 🚧 并行施工中（契约 `m489-spec.md`） | 2026-11-10 |
+| M9 媒体链路 | `worklog/M09.md` | 6 | 🚧 并行施工中（契约 `m489-spec.md`） | 2026-11-10 |
 | M10 拼接交付 | `worklog/M10.md` | 6 | ⬜ 未开工 | — |
 | M11 前端 | `worklog/M11.md` | 7 | ⬜ 未开工 | — |
 | M12 接帧长视频 | `worklog/M12.md` | 4 | ⬜ 未开工 | — |
