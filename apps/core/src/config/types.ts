@@ -10,7 +10,7 @@ import { z } from "zod";
 // 类型（冻结）
 // ---------------------------------------------------------------------------
 
-export const ROLES = ["text", "prompt", "plan"] as const;
+export const ROLES = ["text", "prompt", "plan", "vision"] as const;
 export type Role = (typeof ROLES)[number];
 
 export interface LlmBackend {
@@ -67,6 +67,7 @@ export const RoleRoutingSchema = z.object({
   text: z.string().optional(),
   prompt: z.string().optional(),
   plan: z.string().optional(),
+  vision: z.string().optional(),
 });
 
 /**
