@@ -15,31 +15,27 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `ec4d089` + 未提交的 `m267-spec.md` |
-| 当前里程碑 | **M2 ∥ M6 ∥ M7 三线并行 🚧** |
-| 已完成子任务 | M1 ✅ 全绿（`897b572`）；D1-D5 裁决全部落档（decision-log §17-§19）；并行契约冻结 `m267-spec.md` |
-| 下一任务 | 三轨并行施工：M2（compliance/，4 子任务）∥ M6（shot/，8 子任务）∥ M7（media/，5 子任务），各派一次性 subagent |
-| 阻塞项 | 无。shared 包本轮冻结；三轨文件零交集（compliance/ shot/ media/） |
+| 当前版本 | `3a40d58`（M2/M6/M7 三轨全绿提交，工作树干净） |
+| 当前里程碑 | **M2 ✅ / M6 ✅ / M7 ✅（三线并行完工）** |
+| 已完成子任务 | M2 4/4（gate 22 例）· M6 8/8（shot 72 例）· M7 5/5（media 40 例）· 合流 tsc 三包 0 error · vitest 158/158 |
+| 下一任务 | **M3 提示词资产**（24.5 人日，等的就是 M2-3 签名——已冻结）与 **M5 LLM 接入**（6 人日，替换 M2 自带的临时 llmCall + 接 M6 留的 LLM 依赖项）可并行开工 |
+| 阻塞项 | 无。文档笔误批（architecture L1521 / api-contract L963 的 floor）留待修订，不阻塞 |
 
-**一句话**：M1 全绿收口后，并行契约 `m267-spec.md` 已冻结（含 D1-D5 裁决落地、三轨签名、E1-E5 漂移裁决、各轨出口标准）。shared 包与 core 既有文件本轮冻结，缺东西记 [BLOCKED] 由主会话统一改。
+**一句话**：三轨并行一次通过。闸门（§12.1 口径引导词 + 结构防注入 22 例）、分镜引擎（九公式/资产编号/风险分三闸/因果审计 72 例）、task_type（六值推导/校验表/帧换算 ceil 化 40 例）全部落地。帧换算 ceil 裁决记 decision-log §20。日志 M02/M06/M07 各 [001]。
 
 ---
 
 ## §2 下一步具体做什么
 
-### 进行中的：三线并行
+### 下一批并行
 
-| 轨道 | 目录 | 子任务 | 出口 |
-|---|---|---|---|
-| M2 合规闸门 | `apps/core/src/compliance/` | 4 | gate.test.ts 绕过结构测试全绿 + GATE_SYSTEM_PROMPT 含 §12.1 五要素 |
-| M6 分镜引擎 | `apps/core/src/shot/` | 8 | cascade/dialogueBudget/assignAssetCodes/riskScore/causality/triggers 测试全绿 |
-| M7 task_type | `apps/core/src/media/` | 5 | deriveTaskType/checkMaterials/frames/refVideo/workflow 测试全绿 |
+| 轨道 | 依赖 | 内容 |
+|---|---|---|
+| **M3 提示词资产**（24.5 人日） | ✅ M2-3 签名已冻结（assembleSkill 机制就位，prompts/ 占位已建） | base.md / shells / policy-sfw / policy-nsfw 真内容 + M3-6 动作库全结构化（D2 已定：全结构化）|
+| **M5 LLM 接入**（6 人日） | ✅ 无阻塞 | pickBackend / llmChat / 内网策略 / stripReasoning——完成后替换 M2 gate.ts 的临时 llmCall、接 M6 风险分 LLM 依赖项（E3/E4 留的接口） |
+| M4 校验器（9.5 人日） | 等 M3 产出真实骨架 | 出口标准：EX05/EX06 两段骨架零告警 + 注入 3 错全报 |
 
-**共同验收**：`pnpm -C apps/core exec tsc --noEmit` 0 error、`pnpm -C apps/core test` 全绿（三轨测试合流）。
-
-**若子代理死了/429**：读 `docs/m267-spec.md` 对应轨章节 + 对应 `worklog/M0N.md` 已有条目，接着写。签名、公式、测试用例全在 spec 里。
-
-**M2/M6/M7 之后的分流**：M3（提示词资产，等 M2-3 签名——已在 spec §1.4 冻结，M3 可随时起）、M5（LLM 接入，6 人日，替换 M2 自带的临时 llmCall）、M13（小说创作，依赖 M5）。
+**M3 两个待办**：M3-6 动作库 150+ 条录入建议拆多个 subagent 并行（BUILD §7 数据录入约定）；TK 分段注入（decision-log §十九 S1-S7）在 M3-7 拼装实现时落地。
 
 ---
 
