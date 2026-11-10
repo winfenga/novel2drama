@@ -15,35 +15,32 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `cde0f60`（M0 已提交，工作树干净）+ 未提交的 `m1-spec.md` |
-| 当前里程碑 | **M1（领域模型与 schema）🚧 进行中 0/8** |
-| 已完成子任务 | 契约已冻结：`docs/m1-spec.md`（D12-D17 六处裁决） |
-| 下一任务 | 派 Block A（M1-1/2/5）+ Block B（M1-3/4/7）并行一次性 subagent；完成后派 C（M1-6/8） |
-| 阻塞项 | 无。team 名额 8/8 满（死窗口占位），M1 全走一次性 subagent |
+| 当前版本 | `f4d87d8` + 未提交的 M1 收尾（[004] strict 修复 + 状态回写） |
+| 当前里程碑 | **M1（领域模型与 schema）🚧 出口全绿，待 commit 关账** |
+| 已完成子任务 | M1-1~8 全部 ✅（schemas 八文件 + 19 条测试全绿 + tsc 三包 0 error） |
+| 下一任务 | commit M1 → 更新 WORKLOG §3 状态表 → 下一里程碑分流（M2 合规闸门 / M6 分镜引擎 / M7 task_type，均只等 M1） |
+| 阻塞项 | 无。M2 开工前主人需定 D1（闸门本地判 or 云端判）；M3 前需定 D2（动作库全结构化 vs 按需检索） |
 
-**一句话**：M0 全绿提交（`dec4b5d`+`cde0f60`）。M1 契约冻结在 `m1-spec.md`，八个子任务分三块：A（项目/台词/角色）、B（分镜/提示词/NSFW refine）、C（资产+收口+14 条测试矩阵）。M2/M6/M7 都等它。
+**一句话**：M1 全绿。`packages/shared/src/schemas/` 八文件（enums/project/dialogue/character/prompt/shot/nsfw/asset）+ roundtrip 19 条测试全过；NSFW-P0 联合约束（sfw 拒 NSFW 字段）由 refineShotPolicy + 测试用例 2-6 双重兜底；判别联合两壳已 strict 化。日志 `worklog/M01.md` [001]-[004]。
 
 ---
 
 ## §2 下一步具体做什么
 
-### 进行中的：M1 三块调度
+### M1 已收口，接下来分流
 
-**Block A（M1-1/2/5）**：`packages/shared/src/schemas/{enums,project,dialogue,character}.ts` + `sniffSourceKind()`
-**Block B（M1-3/4/7）**：`schemas/{prompt,shot,nsfw}.ts` + `refineShotPolicy()`——**NSFW-P0 联合约束走 zod refine，sfw 时 intensityLevel 必须被拒**
-**Block C（M1-6/8）**：`schemas/asset.ts` + `index.ts` 追加 re-export + `roundtrip.test.ts` 14 条验收矩阵
+M1 是 M2/M6/M7 共同前置，现在三条线都可起：
 
-依赖：A 先建 `enums.ts`（B 只读）；C 等 A/B 都完。
+| 线 | 前置补齐 | 内容 |
+|---|---|---|
+| **M2 合规闸门**（7 人日） | 主人定 D1（本地判 or 云端判） | M2-1 闸门硬编码（判定口径已冻结在 nsfw-design §12.1：判身体不判户口、JK 放行、自报 <18 硬拒）；M2-2 四类绕过测试（口径更新：自称五百岁不算绕过）；M2-3 策略拼装；M2-4 镜头级分叉 |
+| **M6 分镜引擎**（18 人日） | 无，可直接起 | 依赖 M1-3 的 Shot 与时长级联公式（ARCH §6.2.3） |
+| **M7 task_type 校验**（6 人日） | 无，可直接起 | 依赖 M1-3/M1-4，六种组合推导（FRAME_ROLES/TASK_TYPES 枚举已就位） |
 
-**零件冻结**：M0 四文件（errors/envelope/source/index 既有内容）一字不改。
-
-**M1 出口标准**（全绿才算完）：
-1. `pnpm -r exec tsc --noEmit` 三包 0 error
-2. `pnpm -C packages/shared test` 全绿（vitest）
-3. 14 条往返/refine 用例全绿，其中 sfw×intensityLevel/moduleTypes/bodyState 三条拦截是 NSFW-P0 命门
-4. Shot 完整 JSON 往返一致
-
-**若子代理死了/429**：读 `docs/m1-spec.md` 全文 + 本节文件清单，接着写。签名、裁决（§3 各 ⚖️ 处）、验收矩阵（§4）全在 spec 里。
+**M1 期间沉淀的新坑（§4 表续，别再踩）**：
+- zod `z.object` 默认 strip 未知键 → **判别联合必须 `.strict()`**，「能 parse」≠「字段集正确」（[004]）
+- 并行块的交接面文件（enums.ts）必须先行落盘，且只许一人写
+- schema 层占位（`z.unknown()`）收口时必须显式列授权清单，否则代理不敢替换（C 因此主动留了 Episode.scenes 占位——纪律执行到位）
 
 ---
 

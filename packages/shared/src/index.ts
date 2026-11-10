@@ -21,3 +21,14 @@ export type { Envelope, OkEnvelope, ErrEnvelope } from "./envelope.js";
 
 export { AUDIT_SOURCES, isAuditSource } from "./source.js";
 export type { AuditSource } from "./source.js";
+
+// ── M1-8 收口：schemas 全量 re-export（m1-spec §4.1；仅末尾追加，不动 M0 冻结区）──
+
+export * from "./schemas/enums.js";
+export * from "./schemas/dialogue.js";
+export * from "./schemas/character.js";
+export * from "./schemas/project.js";
+export * from "./schemas/prompt.js";
+export * from "./schemas/nsfw.js";
+export * from "./schemas/shot.js";
+export * from "./schemas/asset.js";

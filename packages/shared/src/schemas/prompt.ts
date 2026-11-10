@@ -14,33 +14,40 @@ import type { TaskType } from "./enums.js";
 
 // ── 六段壳（ref2va / hybrid）──
 
-export const sixSectionShellSchema = z.object({
-  shell: z.literal("six-section"),
-  // 六个正文字段，顺序固定
-  subjectDefinitions: z.string(),
-  summary: z.string(),
-  // retentionAnalysis 的枚举内容校验（fully_preserved 等）是 M4 校验器的活，schema 层只验非空
-  retentionAnalysis: z.string().min(1),
-  detailedDescription: z.string(),
-  overallSoundscape: z.string(),
-  nonDiegeticMusic: z.string(),
-  // 附加行（不属于六段，位于最末）——必填
-  exclusionLine: z.string().min(1),
-});
+export const sixSectionShellSchema = z
+  .object({
+    shell: z.literal("six-section"),
+    // 六个正文字段，顺序固定
+    subjectDefinitions: z.string(),
+    summary: z.string(),
+    // retentionAnalysis 的枚举内容校验（fully_preserved 等）是 M4 校验器的活，schema 层只验非空
+    retentionAnalysis: z.string().min(1),
+    detailedDescription: z.string(),
+    overallSoundscape: z.string(),
+    nonDiegeticMusic: z.string(),
+    // 附加行（不属于六段，位于最末）——必填
+    exclusionLine: z.string().min(1),
+  })
+  // strict：六段壳字段是封闭集合，交叉赋值（three-field 塞六段字段）必须被拒
+  // （m1-spec §4 验收用例 8「交叉失败」，主会话 2026-11-10 裁决补 strict）
+  .strict();
 export type SixSectionShell = z.infer<typeof sixSectionShellSchema>;
 
 // ── 三字段壳（t2va / i2va / l2va / fl2va）──
 
-export const threeFieldShellSchema = z.object({
-  shell: z.literal("three-field"),
-  // i2va 及变体有；t2va 无
-  instructionLine: z.string().optional(),
-  integratedMultimodalDescription: z.string(),
-  overallSoundscape: z.string(),
-  nonDiegeticMusic: z.string(),
-  // 附加行——必填
-  exclusionLine: z.string().min(1),
-});
+export const threeFieldShellSchema = z
+  .object({
+    shell: z.literal("three-field"),
+    // i2va 及变体有；t2va 无
+    instructionLine: z.string().optional(),
+    integratedMultimodalDescription: z.string(),
+    overallSoundscape: z.string(),
+    nonDiegeticMusic: z.string(),
+    // 附加行——必填
+    exclusionLine: z.string().min(1),
+  })
+  // strict：同六段壳，封闭字段集（验收用例 8）
+  .strict();
 export type ThreeFieldShell = z.infer<typeof threeFieldShellSchema>;
 
 // ── 判别联合 ──

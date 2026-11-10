@@ -16,6 +16,8 @@ import { sourceKindSchema, episodeStatusSchema } from "./enums.js";
 import type { SourceKind } from "./enums.js";
 import { dialogueLineSchema } from "./dialogue.js";
 import { characterSchema } from "./character.js";
+import { shotSchema } from "./shot.js";
+import { assetSchema } from "./asset.js";
 
 // ── 源文本单元 ──
 export const sourceUnitSchema = z.object({
@@ -99,7 +101,7 @@ export const sceneSchema = z.object({
   /** 台词挂在场级，用 shotId 关联到具体镜头 */
   dialogue: z.array(dialogueLineSchema),
   /** Shot（B 块 shot.ts）；A/B 互不 import，见文件头说明 */
-  shots: z.array(z.unknown()),
+  shots: z.array(shotSchema),
 });
 export type Scene = z.infer<typeof sceneSchema>;
 
@@ -112,7 +114,7 @@ export const projectSchema = z.object({
   episodes: z.array(episodeSchema),
   characters: z.array(characterSchema),
   /** Asset（C 块 asset.ts）；A 不 import C，见文件头说明 */
-  assets: z.array(z.unknown()),
+  assets: z.array(assetSchema),
   llmUsage: z.object({
     tokensIn: z.number(),
     tokensOut: z.number(),
