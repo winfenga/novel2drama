@@ -19,6 +19,19 @@ import { characterSchema } from "./character.js";
 import { shotSchema } from "./shot.js";
 import { assetSchema } from "./asset.js";
 
+/**
+ * 生成侧帧率 —— **常量，不是配置**（decision-log §22.2）。
+ *
+ * H3 视频生成只有 24fps，改不了；超分不改帧率；唯一能升帧率的地方是
+ * Video2X + RIFE 插帧（整数倍率 1–8）。交付帧率 = `GENERATION_FPS × interpolateMul`。
+ */
+export const GENERATION_FPS = 24 as const;
+
+/** 交付帧率 = 生成帧率 × 插帧倍率（0/1 均视为不插帧） */
+export function deliveryFps(interpolateMul: number): number {
+  return GENERATION_FPS * (interpolateMul < 2 ? 1 : interpolateMul);
+}
+
 // ── 源文本单元 ──
 export const sourceUnitSchema = z.object({
   index: z.number(),
@@ -64,8 +77,11 @@ export const projectSettingsSchema = z.object({
   allowSlowMotion: z.boolean(),
   // C 生成（architecture L1059-1081，项目级默认值；镜头级覆盖在 GenerationParams）
   resolution: z.string().default("1080x1920"),
-  /** 24 | 30 */
-  fps: z.number().refine((v) => v === 24 || v === 30, { error: "fps 只允许 24 或 30" }),
+  // ⚠️ 原 `fps: 24|30` 已删（decision-log §22.2）：生成帧率恒为 GENERATION_FPS=24，
+  //    不是可配项；交付帧率 = 24 × interpolateMul。30 既非 H3 能出、也非 RIFE 能出
+  //    （24×1.25 会在 17n+5 网格上出半帧），是照抄参考项目的孤儿选项。
+  /** 交付帧率倍率：0 = 不插帧（等价 1）；2/3/4… 交付帧率 = GENERATION_FPS × 本值 */
+  interpolateMul: z.number().int().min(0).max(8).default(0),
   aspect: z.string().default("9:16"),
   useVDN: z.boolean(),
   imageWorkflow: z.string().default("qwen21:t2i"),

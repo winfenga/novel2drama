@@ -139,7 +139,7 @@ function buildProject(): Project {
       cameraStyle: "cinematic",
       allowSlowMotion: false,
       resolution: "1080x1920",
-      fps: 24,
+      interpolateMul: 0,
       aspect: "9:16",
       useVDN: true,
       imageWorkflow: "qwen21:t2i",
