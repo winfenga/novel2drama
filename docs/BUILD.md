@@ -15,31 +15,28 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `82f6407` + 未提交的 `m489-spec.md` |
-| 当前里程碑 | **M4 ∥ M8 ∥ M9 三线并行 🚧** |
-| 已完成子任务 | M0-M3/M5/M6/M7 ✅（全包 297+38 绿）；并行契约 `m489-spec.md` 冻结（G1-G5 漂移裁决） |
-| 下一任务 | M4（validate/，7 子任务）∥ M8（comfy/，6 子任务）∥ M9（gpu/ + media/ 新子目录，6 子任务），各派一次性 subagent |
-| 阻塞项 | 无。shared 与 apps/core 既有文件本轮全冻结；GPU 锁由 M9 建、M8 留接口对接（G2） |
+| 当前版本 | `f492028`（M4/M8/M9 三线关账，工作树干净） |
+| 当前里程碑 | **M4 ✅ / M8 ✅ / M9 ✅ —— 12/14 里程碑完成** |
+| 已完成子任务 | M0-M9 全绿（全仓 tsc 0 error，401+38 测试）；M4 六层 27 例 / M8 六模块 31 例（三★坑用例） / M9 六子任务 46 例（ASR 三坑） |
+| 下一任务 | **M13 契约**（m13-spec 待写，依赖全就位）∥ **M10 拼接交付**（FCPXML/SRT/CSV，依赖 M8/M9 ✅）∥ **M11 前端**（依赖 M0-5 ✅，可起）∥ M12 接帧（依赖 M7/M8 ✅，可起） |
+| 阻塞项 | 无。接线债（主会话收尾任务）：server.ts 挂载 createOpenAiRouter / Task.error 对接 queue / GPU 锁 holder 真实接线（M8 queue 与 M9 lock 对接）/ gate.ts 临时 llmCall 换 M5 真实现 |
 
-**一句话**：出片链最后三条腿并行。M4 校验器（六层 20 项机械化，出口=EX05/EX06 零告警+三错注入全报）、M8 ComfyUI（心跳坑/队列/包络坑三个 ★ 用例写死）、M9 媒体链路（ASR 三坑全处理 + 容错匹配 15% + GPU 锁三态）。全部 mock 验证，真实联调另批。
+**一句话**：12/14 完成。出片链只剩 M10/M12，界面剩 M11，旁挂剩 M13——四条线全部无阻塞可并行。合流验收时清了 71 个 .js 编译产物（vite-node 缓存遮蔽源码，坑 14）+ 修了 M9 的 6 处路径/类型笔误（相对路径层级错/SpawnLike 引错命名空间/stdio ignore 导致 never）。
 
 ---
 
 ## §2 下一步具体做什么
 
-### 进行中的：M4 ∥ M8 ∥ M9
+### 下一批（四条全无阻塞，主人定哪几条）
 
-| 轨道 | 目录 | 子任务 | 关键出口 |
-|---|---|---|---|
-| M4 校验器 | `apps/core/src/validate/` | 7 | EX05/EX06 骨架零告警 + ①关键帧写成 Picture②删开场动作③soundscape 抄台词 三处全报 |
-| M8 ComfyUI | `apps/core/src/comfy/` | 6 | 心跳坑（ws progress 而 /history 空 → 不误杀）/ queue_full·vram_insufficient / **/v1 不套包络** |
-| M9 媒体链路 | `apps/core/src/gpu/` + `media/` 新子目录 | 6 | ASR 三坑（繁简归一化/字均分/报错不猜）+ 容错匹配 15% + GPU 锁三态 |
+| 轨道 | 依赖 | 内容 |
+|---|---|---|
+| **M13 小说创作**（20 人日） | 全就位 | 五阶段流程 + kb + TK 分段注入（消费 tk.md 的 9 锚点）+ 素材库——m13-spec 待写 |
+| **M10 拼接交付**（10.5） | M8 ✅ M9 ✅ | 全集绝对时间轴 + FCPXML（分数时长）/SRT（一句一字幕）/CSV（BOM）+ 缺口报错 500 + 导出前 8 项校验 |
+| **M11 前端**（16.0） | M0-5 ✅ | IDE 五区布局 + 启动动画 + 分镜表素材标签（模式由标签推导）+ NSFW theme |
+| **M12 接帧**（6.5） | M7 ✅ M8 ✅ | 接帧按钮（链内默认勾可摘除）+ 扣首帧 + context_frames + 串行出词任务依赖 |
 
-**共同验收**：`pnpm -r exec tsc --noEmit` 0 error、vitest 全绿（全 mock）。
-
-**若子代理死了/429**：读 `docs/m489-spec.md` 对应轨章节 + `worklog/M04.md`/`M08.md`/`M09.md` 已有条目，接着写。
-
-**M13 与 M10/M11/M12 排队**：本批完成后 M13（契约另写）与 M10（三件套，依赖 M8/M9 实产）可起；M11/M12 收尾。
+**接线收尾清单（小任务，随批处理）**：① server.ts 挂 /v1 router ② Task.error↔queue.lastError ③ GPU 锁真实接线 ④ gate.ts llmCall 换 M5 实现 ⑤ M6 风险分 LLM 依赖项接 M5
 
 ---
 
@@ -74,6 +71,9 @@
 | 11 | team 名额 8 满后死窗口占位无法清理 | `maxMembers` 是 immutable roster。**长会话省着用 spawn_teammate**；单块任务用一次性 subagent（不占名额） |
 | 12 | 子代理死于 content_filter（R18 长文本） | 把摘录 R18 原文整段读入后**连续大批量写露骨文本**会触发 provider 审查。**R18 内容写入必须切小批次**（单次写入量小、分文件落盘）；死因要靠「日志末条 + 盘上产物差集」验尸——代理自己的记忆可能停在死前，被唤醒后会把残留窗口误当事实（见 M03 [003]/[004] 双 CORRECTION 教训） |
 | 13 | append-only 日志的双 CORRECTION 叠放 | 代理被唤醒后基于残缺记忆「纠正」正确记录是真实风险。**主会话代记时保留全部叠放层**，读者从 [001]→[CORRECTION #1]→[CORRECTION #2] 能看到完整归因链，这比一条「正确」记录更有价值 |
+| 14 | vite-node 把 .js 编译缓存落源码目录并**遮蔽同名 .ts** | NodeNext 解析下 `.js` 优先于 `.ts`，旧产物会让新源码的修改失效、tsc 报幽灵错（TS2307 找到不存在的缺失）。**症状**：文件在、导出在、tsc 仍说找不到。**处置**：清 src/test 下全部 .js + node_modules/.vite 缓存后重跑 |
+| 15 | 子代理的相对路径层级笔误（`../` 少一级） | `media/tts/` 引 `../gpu/` 实际落 `media/gpu/`（不存在）。**排查工具**：`tsc --traceResolution` 直接显示候选路径——表象诡异时先看解析轨迹再猜 |
+| 16 | stdio: "ignore" 导致类型推断成 never | spawn 的 stdio 设 ignore 后 stdout 类型为 null，`?.on` 链推断 never。**修法**：不用消费的流也保持 "pipe"，或显式类型断言 |
 
 ---
 
