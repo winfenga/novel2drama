@@ -15,32 +15,31 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `f4d87d8` + 未提交的 M1 收尾（[004] strict 修复 + 状态回写） |
-| 当前里程碑 | **M1（领域模型与 schema）🚧 出口全绿，待 commit 关账** |
-| 已完成子任务 | M1-1~8 全部 ✅（schemas 八文件 + 19 条测试全绿 + tsc 三包 0 error） |
-| 下一任务 | commit M1 → 更新 WORKLOG §3 状态表 → 下一里程碑分流（M2 合规闸门 / M6 分镜引擎 / M7 task_type，均只等 M1） |
-| 阻塞项 | 无。M2 开工前主人需定 D1（闸门本地判 or 云端判）；M3 前需定 D2（动作库全结构化 vs 按需检索） |
+| 当前版本 | `ec4d089` + 未提交的 `m267-spec.md` |
+| 当前里程碑 | **M2 ∥ M6 ∥ M7 三线并行 🚧** |
+| 已完成子任务 | M1 ✅ 全绿（`897b572`）；D1-D5 裁决全部落档（decision-log §17-§19）；并行契约冻结 `m267-spec.md` |
+| 下一任务 | 三轨并行施工：M2（compliance/，4 子任务）∥ M6（shot/，8 子任务）∥ M7（media/，5 子任务），各派一次性 subagent |
+| 阻塞项 | 无。shared 包本轮冻结；三轨文件零交集（compliance/ shot/ media/） |
 
-**一句话**：M1 全绿。`packages/shared/src/schemas/` 八文件（enums/project/dialogue/character/prompt/shot/nsfw/asset）+ roundtrip 19 条测试全过；NSFW-P0 联合约束（sfw 拒 NSFW 字段）由 refineShotPolicy + 测试用例 2-6 双重兜底；判别联合两壳已 strict 化。日志 `worklog/M01.md` [001]-[004]。
+**一句话**：M1 全绿收口后，并行契约 `m267-spec.md` 已冻结（含 D1-D5 裁决落地、三轨签名、E1-E5 漂移裁决、各轨出口标准）。shared 包与 core 既有文件本轮冻结，缺东西记 [BLOCKED] 由主会话统一改。
 
 ---
 
 ## §2 下一步具体做什么
 
-### M1 已收口，接下来分流
+### 进行中的：三线并行
 
-M1 是 M2/M6/M7 共同前置，现在三条线都可起：
+| 轨道 | 目录 | 子任务 | 出口 |
+|---|---|---|---|
+| M2 合规闸门 | `apps/core/src/compliance/` | 4 | gate.test.ts 绕过结构测试全绿 + GATE_SYSTEM_PROMPT 含 §12.1 五要素 |
+| M6 分镜引擎 | `apps/core/src/shot/` | 8 | cascade/dialogueBudget/assignAssetCodes/riskScore/causality/triggers 测试全绿 |
+| M7 task_type | `apps/core/src/media/` | 5 | deriveTaskType/checkMaterials/frames/refVideo/workflow 测试全绿 |
 
-| 线 | 前置补齐 | 内容 |
-|---|---|---|
-| **M2 合规闸门**（7 人日） | 主人定 D1（本地判 or 云端判） | M2-1 闸门硬编码（判定口径已冻结在 nsfw-design §12.1：判身体不判户口、JK 放行、自报 <18 硬拒）；M2-2 四类绕过测试（口径更新：自称五百岁不算绕过）；M2-3 策略拼装；M2-4 镜头级分叉 |
-| **M6 分镜引擎**（18 人日） | 无，可直接起 | 依赖 M1-3 的 Shot 与时长级联公式（ARCH §6.2.3） |
-| **M7 task_type 校验**（6 人日） | 无，可直接起 | 依赖 M1-3/M1-4，六种组合推导（FRAME_ROLES/TASK_TYPES 枚举已就位） |
+**共同验收**：`pnpm -C apps/core exec tsc --noEmit` 0 error、`pnpm -C apps/core test` 全绿（三轨测试合流）。
 
-**M1 期间沉淀的新坑（§4 表续，别再踩）**：
-- zod `z.object` 默认 strip 未知键 → **判别联合必须 `.strict()`**，「能 parse」≠「字段集正确」（[004]）
-- 并行块的交接面文件（enums.ts）必须先行落盘，且只许一人写
-- schema 层占位（`z.unknown()`）收口时必须显式列授权清单，否则代理不敢替换（C 因此主动留了 Episode.scenes 占位——纪律执行到位）
+**若子代理死了/429**：读 `docs/m267-spec.md` 对应轨章节 + 对应 `worklog/M0N.md` 已有条目，接着写。签名、公式、测试用例全在 spec 里。
+
+**M2/M6/M7 之后的分流**：M3（提示词资产，等 M2-3 签名——已在 spec §1.4 冻结，M3 可随时起）、M5（LLM 接入，6 人日，替换 M2 自带的临时 llmCall）、M13（小说创作，依赖 M5）。
 
 ---
 

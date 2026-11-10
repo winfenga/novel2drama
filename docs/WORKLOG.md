@@ -74,12 +74,12 @@
 |---|---|---:|---|---|
 | M0 地基 | `worklog/M00.md` | 8 | ✅ 完成（`dec4b5d`） | 2026-11-10 |
 | M1 领域模型 | `worklog/M01.md` | 8 | ✅ 完成（出口全绿：tsc 三包 0 error / vitest 19 条） | 2026-11-10 |
-| M2 合规闸门 | `worklog/M02.md` | 4 | ⬜ 未开工 | — |
+| M2 合规闸门 | `worklog/M02.md` | 4 | 🚧 并行施工中（契约 `m267-spec.md` §1） | 2026-11-10 |
 | M3 提示词资产 | `worklog/M03.md` | 8 | ⬜ 未开工 | — |
 | M4 校验器 | `worklog/M04.md` | 7 | ⬜ 未开工 | — |
 | M5 LLM 接入 | `worklog/M05.md` | 5 | ⬜ 未开工 | — |
-| M6 分镜引擎 | `worklog/M06.md` | 8 | ⬜ 未开工 | — |
-| M7 task_type | `worklog/M07.md` | 5 | ⬜ 未开工 | — |
+| M6 分镜引擎 | `worklog/M06.md` | 8 | 🚧 并行施工中（契约 `m267-spec.md` §2） | 2026-11-10 |
+| M7 task_type | `worklog/M07.md` | 5 | 🚧 并行施工中（契约 `m267-spec.md` §3） | 2026-11-10 |
 | M8 ComfyUI | `worklog/M08.md` | 6 | ⬜ 未开工 | — |
 | M9 媒体链路 | `worklog/M09.md` | 6 | ⬜ 未开工 | — |
 | M10 拼接交付 | `worklog/M10.md` | 6 | ⬜ 未开工 | — |
