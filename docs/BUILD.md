@@ -15,27 +15,32 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `3a40d58`（M2/M6/M7 三轨全绿提交，工作树干净） |
-| 当前里程碑 | **M2 ✅ / M6 ✅ / M7 ✅（三线并行完工）** |
-| 已完成子任务 | M2 4/4（gate 22 例）· M6 8/8（shot 72 例）· M7 5/5（media 40 例）· 合流 tsc 三包 0 error · vitest 158/158 |
-| 下一任务 | **M3 提示词资产**（24.5 人日，等的就是 M2-3 签名——已冻结）与 **M5 LLM 接入**（6 人日，替换 M2 自带的临时 llmCall + 接 M6 留的 LLM 依赖项）可并行开工 |
-| 阻塞项 | 无。文档笔误批（architecture L1521 / api-contract L963 的 floor）留待修订，不阻塞 |
+| 当前版本 | `6b3e870`（决策批次收尾）+ 未提交的 `m35-spec.md` |
+| 当前里程碑 | **M3 ∥ M5 两线并行 🚧**（M13 排队等 M5） |
+| 已完成子任务 | M0/M1/M2/M6/M7 ✅；D1-D7 全清账（decision-log §21） |
+| 下一任务 | M3（提示词资产，8 子任务，M3-6 动作库拆分录入）∥ M5（LLM 接入，5 子任务，含 vision role 豁免） |
+| 阻塞项 | 无。总红线追加：**不静默降级**（execution-plan §8.2，spec §3 第 2 条已写死） |
 
-**一句话**：三轨并行一次通过。闸门（§12.1 口径引导词 + 结构防注入 22 例）、分镜引擎（九公式/资产编号/风险分三闸/因果审计 72 例）、task_type（六值推导/校验表/帧换算 ceil 化 40 例）全部落地。帧换算 ceil 裁决记 decision-log §20。日志 M02/M06/M07 各 [001]。
+**一句话**：并行契约 `m35-spec.md` 冻结。M5 先行（M3 之后的 llmCall 替换依赖它）；M3 六个内容子任务 + 动作库结构化（D2 全结构化，150+ 条逐条录入 EX01 原文）。TK 分段注入（§十九 S1-S6）在 M3-7 落地。
 
 ---
 
 ## §2 下一步具体做什么
 
-### 下一批并行
+### 进行中的：M3 ∥ M5
 
-| 轨道 | 依赖 | 内容 |
-|---|---|---|
-| **M3 提示词资产**（24.5 人日） | ✅ M2-3 签名已冻结（assembleSkill 机制就位，prompts/ 占位已建） | base.md / shells / policy-sfw / policy-nsfw 真内容 + M3-6 动作库全结构化（D2 已定：全结构化）|
-| **M5 LLM 接入**（6 人日） | ✅ 无阻塞 | pickBackend / llmChat / 内网策略 / stripReasoning——完成后替换 M2 gate.ts 的临时 llmCall、接 M6 风险分 LLM 依赖项（E3/E4 留的接口） |
-| M4 校验器（9.5 人日） | 等 M3 产出真实骨架 | 出口标准：EX05/EX06 两段骨架零告警 + 注入 3 错全报 |
+| 轨道 | 目录 | 子任务 | 出口 |
+|---|---|---|---|
+| M5 LLM 接入 | `apps/core/src/llm/` | 5 | pickBackend 两码分开 / ipaddr 内网策略 / 错分类 502 / stripReasoning / temperature 重试——全 mock 测试绿 |
+| M3 提示词资产 | `prompts/` + `promptLibrary/` + `promptlib/` | 8 | base/shells/policy 真内容 + 动作库 ≥150 条结构化 + TK 分段检索 + 覆盖三层集成测试 |
 
-**M3 两个待办**：M3-6 动作库 150+ 条录入建议拆多个 subagent 并行（BUILD §7 数据录入约定）；TK 分段注入（decision-log §十九 S1-S7）在 M3-7 拼装实现时落地。
+**共同验收**：`pnpm -r exec tsc --noEmit` 0 error、vitest 全绿、M3 内容主会话人工抽查（运镜六条全文/L4 裁决口径/first_frame 反引号）。
+
+**若子代理死了/429**：读 `docs/m35-spec.md` 对应轨章节 + `worklog/M03.md`/`M05.md` 已有条目，接着写。
+
+**M3-6 录入分工**：动作库 8 类若单代理太重，可拆 2-3 个一次性 subagent（每类一个文件，天然零冲突），prompt 里必须贴 EX01 对应行号区间与录入纪律全文。
+
+**M13 排队**：M5 完成后立即接力（decision-log §21 第 4 条），契约另写 m13-spec。
 
 ---
 
