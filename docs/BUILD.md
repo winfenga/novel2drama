@@ -15,44 +15,35 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `ce68952` + 未提交的 M0 代码（M0-2…M0-7 已验收，M0-8 进行中） |
-| 当前里程碑 | **M0（地基）🚧 进行中 7/8** |
-| 已完成子任务 | M0-1 ✅ M0-2 ✅ M0-3 ✅ M0-4 ✅ M0-5 ✅ M0-6 ✅ M0-7 ✅ / M0-8 🚧 |
-| 下一任务 | **M0-8 装配 + echo 打通 + 三 source 审计验证**（一次性子代理 fef05b8a 施工中） |
-| 阻塞项 | team 名额满 8/8（5 个死窗口占位，无法清理），M0-8 已改走一次性 subagent |
+| 当前版本 | `cde0f60`（M0 已提交，工作树干净）+ 未提交的 `m1-spec.md` |
+| 当前里程碑 | **M1（领域模型与 schema）🚧 进行中 0/8** |
+| 已完成子任务 | 契约已冻结：`docs/m1-spec.md`（D12-D17 六处裁决） |
+| 下一任务 | 派 Block A（M1-1/2/5）+ Block B（M1-3/4/7）并行一次性 subagent；完成后派 C（M1-6/8） |
+| 阻塞项 | 无。team 名额 8/8 满（死窗口占位），M1 全走一次性 subagent |
 
-**一句话**：M0 的零件全部完工并验收（tsc 三包 0 error；config 4 项 + dispatch 6 项运行时验证全过），只剩装配层 routes/server/index + MCP 转发 + e2e。代码全部在盘上，日志 `worklog/M00.md` [001]–[006]。
+**一句话**：M0 全绿提交（`dec4b5d`+`cde0f60`）。M1 契约冻结在 `m1-spec.md`，八个子任务分三块：A（项目/台词/角色）、B（分镜/提示词/NSFW refine）、C（资产+收口+14 条测试矩阵）。M2/M6/M7 都等它。
 
 ---
 
 ## §2 下一步具体做什么
 
-### 进行中的：M0-8 装配（task-5）
+### 进行中的：M1 三块调度
 
-**要写的文件**：`apps/core/src/routes/tools.ts`、`apps/core/src/server.ts`、`apps/core/src/index.ts`、`apps/core/vitest.config.ts`、`apps/core/test/*.test.ts`、`apps/mcp/src/{forward,index}.ts`
+**Block A（M1-1/2/5）**：`packages/shared/src/schemas/{enums,project,dialogue,character}.ts` + `sniffSourceKind()`
+**Block B（M1-3/4/7）**：`schemas/{prompt,shot,nsfw}.ts` + `refineShotPolicy()`——**NSFW-P0 联合约束走 zod refine，sfw 时 intensityLevel 必须被拒**
+**Block C（M1-6/8）**：`schemas/asset.ts` + `index.ts` 追加 re-export + `roundtrip.test.ts` 14 条验收矩阵
 
-**零件全部冻结**（不许改）：
-- `packages/shared`（errors 37 码 / envelope / source）
-- `apps/core/src/paths.ts`（五字段 DramaPaths：configFile=写路径恒新目录，legacyConfigFile=只读回退）
-- `apps/core/src/config/*`（load/save/mask/net/types）
-- `apps/core/src/auth/*`（guard 五步判定）
-- `apps/core/src/tools/*`（audit / idempotency / registry / dispatcher / echo）
+依赖：A 先建 `enums.ts`（B 只读）；C 等 A/B 都完。
 
-**M0 出口标准**（全绿才算完）：
-1. `pnpm install` exit 0
-2. `pnpm -r exec tsc --noEmit` 全包 0 error
-3. `pnpm -C apps/core test` 全绿
-4. 起服务 + 三 source（mcp/api/gui）各调一次 echo
-5. 审计文件里 source 三值各 ≥1 条
-6. 附带：MCP stdio 握手 initialize → tools/list → tools/call echo
+**零件冻结**：M0 四文件（errors/envelope/source/index 既有内容）一字不改。
 
-**若子代理死了/429**：读 `docs/m0-spec.md` §5.12/§5.13 + 任务板 task-5，接着写。文件清单和验收标准全在本节。
+**M1 出口标准**（全绿才算完）：
+1. `pnpm -r exec tsc --noEmit` 三包 0 error
+2. `pnpm -C packages/shared test` 全绿（vitest）
+3. 14 条往返/refine 用例全绿，其中 sfw×intensityLevel/moduleTypes/bodyState 三条拦截是 NSFW-P0 命门
+4. Shot 完整 JSON 往返一致
 
-### M0 完成后
-
-1. 更新 `WORKLOG.md` §3 状态表（M0 → ✅）
-2. git commit（M0 全部代码 + 日志 + `m0-spec.md`）
-3. **下一里程碑**：关键路径 → **M1 领域模型与 schema**（14.0 人日，`execution-plan.md` L152-165，是 M2/M6/M7 共同前置）。M13 小说创作要等 M5（LLM 接入 6.0 人日）完成后才能起跑。
+**若子代理死了/429**：读 `docs/m1-spec.md` 全文 + 本节文件清单，接着写。签名、裁决（§3 各 ⚖️ 处）、验收矩阵（§4）全在 spec 里。
 
 ---
 
