@@ -15,52 +15,44 @@
 
 | 项 | 值 |
 |---|---|
-| 当前版本 | `421cfd8` |
-| 当前里程碑 | **M0（地基）尚未开工** |
-| 已完成子任务 | 0 / 8 |
-| 下一任务 | **M0-2 建 monorepo 骨架** |
-| 阻塞项 | 无 |
+| 当前版本 | `ce68952` + 未提交的 M0 代码（M0-2…M0-7 已验收，M0-8 进行中） |
+| 当前里程碑 | **M0（地基）🚧 进行中 7/8** |
+| 已完成子任务 | M0-1 ✅ M0-2 ✅ M0-3 ✅ M0-4 ✅ M0-5 ✅ M0-6 ✅ M0-7 ✅ / M0-8 🚧 |
+| 下一任务 | **M0-8 装配 + echo 打通 + 三 source 审计验证**（一次性子代理 fef05b8a 施工中） |
+| 阻塞项 | team 名额满 8/8（5 个死窗口占位，无法清理），M0-8 已改走一次性 subagent |
 
-**一句话**：文档层完成，代码层零。仓库只有 `docs/`、`LICENSE`、`README.md`、`.gitignore`。
+**一句话**：M0 的零件全部完工并验收（tsc 三包 0 error；config 4 项 + dispatch 6 项运行时验证全过），只剩装配层 routes/server/index + MCP 转发 + e2e。代码全部在盘上，日志 `worklog/M00.md` [001]–[006]。
 
 ---
 
 ## §2 下一步具体做什么
 
-### 立即要做的：M0-2 monorepo 骨架（1.0 人日）
+### 进行中的：M0-8 装配（task-5）
 
-**目标文件**（9 个，全部新建）：
+**要写的文件**：`apps/core/src/routes/tools.ts`、`apps/core/src/server.ts`、`apps/core/src/index.ts`、`apps/core/vitest.config.ts`、`apps/core/test/*.test.ts`、`apps/mcp/src/{forward,index}.ts`
 
-```
-package.json                # 根，private，workspaces
-pnpm-workspace.yaml         # apps/* packages/*
-tsconfig.base.json          # strict、NodeNext、paths 映射
-.gitignore                  # 追加 node_modules / dist / *.db
-apps/core/package.json
-apps/core/tsconfig.json
-apps/mcp/package.json
-apps/mcp/tsconfig.json
-packages/shared/package.json
-packages/shared/tsconfig.json
-```
+**零件全部冻结**（不许改）：
+- `packages/shared`（errors 37 码 / envelope / source）
+- `apps/core/src/paths.ts`（五字段 DramaPaths：configFile=写路径恒新目录，legacyConfigFile=只读回退）
+- `apps/core/src/config/*`（load/save/mask/net/types）
+- `apps/core/src/auth/*`（guard 五步判定）
+- `apps/core/src/tools/*`（audit / idempotency / registry / dispatcher / echo）
 
-**验收**：`pnpm install` 无报错；`pnpm -r exec tsc --noEmit` 通过。
-**依据**：`execution-plan.md` M0-2 行；`architecture.md` L1912-1940。
+**M0 出口标准**（全绿才算完）：
+1. `pnpm install` exit 0
+2. `pnpm -r exec tsc --noEmit` 全包 0 error
+3. `pnpm -C apps/core test` 全绿
+4. 起服务 + 三 source（mcp/api/gui）各调一次 echo
+5. 审计文件里 source 三值各 ≥1 条
+6. 附带：MCP stdio 握手 initialize → tools/list → tools/call echo
 
-### M0 剩余顺序
+**若子代理死了/429**：读 `docs/m0-spec.md` §5.12/§5.13 + 任务板 task-5，接着写。文件清单和验收标准全在本节。
 
-| ID | 任务 | 人日 | 依据（execution-plan §5） |
-|---|---|---:|---|
-| M0-1 | 仓库与工作区规范 | 1.0 | 已基本完成（36 文件 + 计划表已提交） |
-| **M0-2** | **monorepo 骨架** | **1.0** | ← 下一步 |
-| M0-3 | 配置层（0600 原子写、Key 加密、llmBackends） | 2.0 | `architecture.md` L372-381、L628-658 |
-| M0-4 | 鉴权（token、Origin 白名单、跨站 403） | 1.0 | `architecture.md` L479-492 |
-| M0-5 | dispatcher（`/api/tools`、响应包络、**错误码表唯一权威实现**） | 2.0 | `api-contract.md` L19-83、L772-785 |
-| M0-6 | 审计日志 jsonl | 0.5 | `mcp-tools.md` L523-531 |
-| M0-7 | 幂等（TTL 10 分钟） | 0.5 | `mcp-tools.md` L501-519 |
-| M0-8 | echo 打通（`curl` 能调，三 source 都能记） | 0.5 | `architecture.md` L1948 |
+### M0 完成后
 
-**M0 出口标准**：`curl` 打通一个 echo 工具；审计日志有 `mcp`/`api`/`gui` 三值各一条。
+1. 更新 `WORKLOG.md` §3 状态表（M0 → ✅）
+2. git commit（M0 全部代码 + 日志 + `m0-spec.md`）
+3. **下一里程碑**：关键路径 → **M1 领域模型与 schema**（14.0 人日，`execution-plan.md` L152-165，是 M2/M6/M7 共同前置）。M13 小说创作要等 M5（LLM 接入 6.0 人日）完成后才能起跑。
 
 ---
 
@@ -70,7 +62,9 @@ packages/shared/tsconfig.json
 |---|---|---|
 | 2026-11-10 | 15 份主文档 + 15 份摘录逐行读完（16,632 行） | — |
 | 2026-11-10 | `execution-plan.md` v2.1：14 里程碑 / 171.5 人日 / 190 处引用 | `421cfd8` |
-| 2026-11-10 | `BUILD.md`（本文件） | 本次 |
+| 2026-11-10 | `BUILD.md` + 工作日志体系（WORKLOG.md + 14 里程碑文件） | `edecafd` / `ce68952` |
+| 2026-11-10 | `m0-spec.md` 冻结契约（§1-§10：版本/归属/签名/错误码/日志纪律） | 待提交 |
+| 2026-11-10 | M0-2 骨架 + packages/shared 37 码；M0-3/4 配置+鉴权；M0-5 dispatcher；M0-6/7 审计+幂等 | 待提交 |
 
 ---
 
@@ -83,6 +77,12 @@ packages/shared/tsconfig.json
 | 3 | 人日汇总表与 WBS 对不上 | **每个里程碑的子任务逐项求和，当场核对**，不靠估 |
 | 4 | 计划表漏掉整块工作 | v2.0 漏了 M13 小说创作（入口 C），足足 20 人日。**列范围时把"入口"全查一遍** |
 | 5 | 概念混称 | "三个入口"= 喂料方式（A/B/C）；MCP/API/GUI = 访问方式。两回事 |
+| 6 | pnpm 12 默认拒跑依赖 install 脚本 | 首次 install 报 `ERR_PNPM_IGNORED_BUILDS`（esbuild）。`pnpm-workspace.yaml` 里 `allowBuilds: esbuild: true` 已配好，新里程碑不用再踩 |
+| 7 | `DramaPaths` 四字段读写不分 | 初版把 legacy 回退做进 `configFile`，`saveConfig` 会写回旧目录。**规范缺陷要在调用侧打补丁之前修签名**——签名表达力不足是根因 |
+| 8 | 根目录跑 tsx 探针报 `ERR_MODULE_NOT_FOUND` | 根 package.json 不依赖 shared。**探针必须放 `apps/core` 下跑**才能解析 workspace 链接 |
+| 9 | TS 运行时判断不收窄联合类型 | `v6.kind() === "ipv6"` 不让 TS 窄化 `IPv4 \| IPv6`。用 `instanceof`（`ipaddr.IPv6`） |
+| 10 | 子代理窗口会死于 429，遗言都没有 | 两个窗口同时死、closing message 为空。**纪律**：每完成一块立刻写日志；主会话验收只看盘上文件不看回报；代写日志必须标「主会话代记」 |
+| 11 | team 名额 8 满后死窗口占位无法清理 | `maxMembers` 是 immutable roster。**长会话省着用 spawn_teammate**；单块任务用一次性 subagent（不占名额） |
 
 ---
 

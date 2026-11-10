@@ -1,0 +1,24 @@
+{
+  "name": "text2drama",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "文本转短剧 — monorepo 骨架",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "tsc": "tsc",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

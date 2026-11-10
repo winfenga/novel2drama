@@ -3,16 +3,6 @@ dist/
 *.log
 .DS_Store
 
-# ── 草稿：等主人说开始写代码再取消忽略 ──────────────────────
-# 下面这些是提前写的骨架，还没经过确认，暂不入库。
-# 启用时把这一段删掉，然后 git add 对应路径。
-/apps/
-/packages/
-/pnpm-workspace.yaml
-/tsconfig.base.json
-/package.json
-# ────────────────────────────────────────────────────────
-
 # 运行时数据，绝不入库
 data/
 *.sqlite
